@@ -1,0 +1,14 @@
+language: java
+jdk:
+- oraclejdk8
+env:
+  global:
+  - secure: R0kDuUeZdb/Ii26LlcCIoAvb25VLOxzcupqvacqPJC/ogsawBmdBv8nS7p0PEl9gb3ffKCaarUrWIYT+axqFIuVAMU/0On6VBuz6eqZuUlkyLN4nRtktsybIcqSB22mXf0MdP1I0gl3tVXzKqR8DLctWjuDRsNiR4MiEBVnSr0ufpJiqAwybSf0nqpT4Q01WwOqHCXxAlKzFweIfSsd+LhkzyhBX96pPDdvvTI6aDyBtjf8PmQX9XW4PU+t7sH71ySz7pglZvul8jfMWhQkZ1M+9PP6PoS9erpjbqfoMTtw4nuRQ6G3kONcotWyR2mir2yBwizc46H1dQDgtFEiklI4uVEtiQpaRQSPCZyqQTmpVhqO1PArNpjTi8TrYNLtuDt2AQVHJ2HHxqjdWr6CUgjU77mhoALGkTTF/LAJuMWSzSKGdmnuUflR3Z9Cyucx0T8Sp92DSJDqvuXRJ6gyL4iLGOrEmnTDgzjMI9ISLZNZuXKIdMuhK396lwQLssBYFCD2SHF2Sp75/6xgVIWpC8xs6n383VjGfr09rxlnsnm8SXA5SS58vDqgGaUhopHjxyEOqvOAiI6T2SD9hJMSKai/g4UC4v+qXWKSGIDd5AP35GWZxidEjeKVnl6Qu9NOir+biC9bMvdUvQU0fTmHGGJ9HWlIujSPQIvedxJSIzj0=
+  - secure: DVgKcwQC3h8+RDSGiglDGE15f3j5dTnY1q++1oQ4wYGLsc1DYCIQu8ywyES0tF2wwrYxrgxZKo8LBY2IwcVMg52/Hi1j4cSUlPlyBj+YhvyN42ZbeaXkeqlAiwrtpS1dJfKblgPazrVSpjWqWrsaqyYUoGh0I4KjD4q6Kx4i3YZgBWmgKPYayKlWAdo4Cli2KYv68y/anmN9mOP93JGJcroiJz+O5fa/X7NrxUnjh2/NY9uGSpL7XyKBadG+QO1WmrS9IOR1JEINW27uV/SBCAkGh54vPQXCKRNTzhvFdhsNRyq6PEQbkcXPhF0NvjmDX4Qgg9hSKk/WS0E8UP7H4FmwQpQKjIueEeB1a4f+thrkPDMrX/PWTmTQmrm0y0KJd98SJbdJfkv+aZNC9PxatsKd6vpQ0Pje9yIO/2qUGHGjYtMCyPcCX2Q+d8rQXN2+F8NGam+9WmG1FzBYJacr6JLCRoqM1d66NFK7ifq0vg+QFGdbfkZE4x+U8wmO6YKWk2Tbh7AxxT29070wG9Yn6FoJlF2dew/STz7sdjeIIYjqbOvxYFrIY9C3JAxMSyr7zHLkdUCIhvv9Be8N0tKNOKpy9cUvvx0qpCYbMNM5trrHY4tpmD54HfL3LBygvvGO9u6zfNd8vmV7zghp4qIvFiRUMIkS3Lbg8CooN+Fk/2E=
+before_install:
+- echo -e "machine github.com\n  login $TOKEN" >> ~/.netrc
+- cat ~/.netrc
+- echo -e "[user]\n  name = atao60\n  email = $GITHUB_USER_EMAIL" >> ~/.gitconfig
+- cat ~/.gitconfig
+after_success:
+- mvn clean deploy -Dmaven.test.skip=true -Pmaven-repo-update

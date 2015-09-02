@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>org.pop-xtend</groupId>
+        <artifactId>contrib-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>parent</relativePath>
+    </parent>
+    <artifactId>contrib-aggregator</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Pop Xtend Contribution - Aggregator</name>
+    <description>Gather all the Xtend Contribution modules</description>
+    
+    <modules>
+        <module>parent</module>
+        <module>webapplication</module>
+        <module>noargsctor</module>
+        <module>allfieldsctor</module>
+        <module>i18n</module>
+        <module>annotations</module>
+    </modules>
+   
+    
+</project>

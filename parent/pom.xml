@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.pop-xtend</groupId>
+    <artifactId>contrib-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    
+    <name>Pop Xtend Contribution - Parent</name>
+    <description>Gather all the common items used by Xtend contribution</description>
+    
+    <licenses>
+        <license>
+            <name>Eclipse Public License - v 1.0</name>
+            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        </license>
+    </licenses>
+    
+    <scm>
+        <url>${github.repo.url}</url>
+    </scm>
+    
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots.staging.repo</id>
+            <name>Staging Repository - Snapshots</name>
+            <url>file://${snapshots.staging.repo}</url>
+        </snapshotRepository>
+    </distributionManagement> 
+    
+    <properties>
+
+        <xtend.outputDir>${project.build.directory}/xtend-gen/main</xtend.outputDir>
+        <xtend.testOutputDir>${project.build.directory}/xtend-gen/test</xtend.testOutputDir>
+
+        <snapshots.staging.repo>${project.build.directory}/mvn-repo</snapshots.staging.repo>
+        
+        <repository.domain>github.com</repository.domain>
+        <repository.user>atao60</repository.user>
+        <repository.name>snapshots</repository.name>
+        <github.repo.url>https://${repository.domain}/${repository.user}/${repository.name}</github.repo.url>
+        <git.https.url>${github.repo.url}.git</git.https.url>
+        <git.git.url>git@${repository.domain}:${repository.user}/${repository.name}.git</git.git.url>
+        <git.ssh.url>ssh://${repository.domain}/${repository.user}/${repository.name}.git</git.ssh.url>
+        <!-- With 'master' no needs to generate an index.html file in each (sub-)dir with the dir content list
+           but no more access through http://${repository.user}.github.io/${repository.name},
+           at least without automatic synchronisation between 'master' and 'gh-pages'
+         -->
+        <scm.gitScmUrl>scm:git:${git.git.url}</scm.gitScmUrl>
+        <scm.publish.pubScmUrl>scm:git:${git.git.url}</scm.publish.pubScmUrl>
+        <scm.publish.scmBranch>master</scm.publish.scmBranch> <!-- 'gh-pages' -->
+        
+        <groupid.path>org/pop-xtend</groupid.path>
+        <library.path>${groupid.path}/${project.artifactId}/${project.version}</library.path>
+        <scmWorkingDirectory>${project.build.directory}/checkout</scmWorkingDirectory>
+        <scmToBeRemovedDirectory>${scmWorkingDirectory}/${library.path}</scmToBeRemovedDirectory>
+        
+        <!-- Compiler and encoding -->
+        <jdk.version>1.8</jdk.version>
+        <projectEncoding>UTF-8</projectEncoding>
+
+        <project.build.sourceEncoding>${projectEncoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${projectEncoding}</project.reporting.outputEncoding>
+
+        <maven.compiler.source>${jdk.version}</maven.compiler.source>
+        <maven.compiler.target>${jdk.version}</maven.compiler.target>
+        <maven.compiler.compilerVersion>${jdk.version}</maven.compiler.compilerVersion>
+        <maven.compiler.optimize>true</maven.compiler.optimize>
+        <maven.compiler.fork>true</maven.compiler.fork>
+        <maven.compiler.debug>true</maven.compiler.debug>
+        <maven.compiler.verbose>true</maven.compiler.verbose>
+
+        <!-- Maven and plugins -->
+        <!-- Polyglot for Maven requires 3.3.1+ -->
+        <maven.minimal.version>3.3.1</maven.minimal.version>
+
+        <xtendVersion>2.8.3</xtendVersion>
+
+        <xtend.maven.plugin.version>${xtendVersion}</xtend.maven.plugin.version>
+        <build.helper.maven.plugin.version>1.9.1</build.helper.maven.plugin.version>
+        <maven.enforcer.plugin.version>1.4</maven.enforcer.plugin.version>
+        <versions.maven.plugin.version>2.2</versions.maven.plugin.version>
+        <maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
+        <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
+        <maven.scm.plugin.version>1.9.4</maven.scm.plugin.version>
+        <maven.scm.publish.plugin.version>1.1</maven.scm.publish.plugin.version>
+        <coreext.maven.plugin.version>0.15</coreext.maven.plugin.version>
+
+        <!-- Dependencies -->
+
+        <xtend.version>${xtendVersion}</xtend.version>
+        <spring.boot.starter.version>1.2.5.RELEASE</spring.boot.starter.version>
+        <commons.lang3.version>3.4</commons.lang3.version>
+        
+        <!-- logs -->
+        <slf4j.version>1.7.12</slf4j.version>
+        <logback.version>1.1.3</logback.version>
+        
+        <!-- tests -->
+        <junit.version>4.12</junit.version>
+        <hamcrest.version>1.3</hamcrest.version>
+
+
+    </properties>
+    
+    <!-- just to keep versions-maven-plugin quiet (no Maven plugin projects here) -->
+    <prerequisites>
+        <maven>${maven.minimal.version}</maven>
+    </prerequisites>
+
+    <dependencies>
+        <!-- xtend -->
+        <dependency>
+            <groupId>org.eclipse.xtend</groupId>
+            <artifactId>org.eclipse.xtend.core</artifactId>
+            <version>${xtend.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- logs -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <!-- tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring.boot.starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.xtend</groupId>
+                <artifactId>xtend-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.sviperll</groupId>
+                <artifactId>coreext-maven-plugin</artifactId>
+                <version>${coreext.maven.plugin.version}</version>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build.helper.maven.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <!-- provides enforcer and maven version with maven.version property -->
+                            <id>get-maven-version</id>
+                            <goals>
+                                <goal>maven-version</goal>
+                                <!-- default phase: validate -->
+                            </goals>
+                        </execution>
+                        <execution>
+                            <!-- required to be be able to put the xtend classes in a separate source folder -->
+                            <id>add-source</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>src/main/xtend</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>add-test-source</id>
+                            <!-- required to be be able to put the xtend classes in a separate source folder -->
+                            <phase>generate-test-sources</phase>
+                            <goals>
+                                <goal>add-test-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>src/test/xtend</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.xtend</groupId>
+                    <artifactId>xtend-maven-plugin</artifactId>
+                    <version>${xtend.maven.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                                <goal>testCompile</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${xtend.outputDir}</outputDirectory>
+                                <testOutputDirectory>${xtend.testOutputDir}</testOutputDirectory>
+                                <skipXtend>false</skipXtend>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*Tests.java</include>
+                            <!-- Standard Test Maven names -->
+                            <include>**/Test*.java</include>
+                            <include>**/*Test.java</include>
+                            <include>**/*TestCase.java</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+     </build>
+        
+    <profiles>
+        <profile>
+            <id>maven-repo-update</id>
+            <!-- Neither Github's site-maven-plugin nor maven-scm-publish-plugin can't deal with 
+               removing old files for a published Maven snapshot artifact. It must be dealt with 
+               explicitly, e.g. with maven-scm-plugin. But with scm:remove, the option \-\-ignore-unmatch 
+               for git-rm is not available. The command git-rm can't deal with an empty set of files, 
+               e.g. when the directory for a Maven artifact version is missing. The Maven build will 
+               stop immediately.
+               This is why antrun:run must be used to launch git-rm with \-\-ignore-unmatch. -->
+            <properties>
+                <profile.active>true</profile.active>
+            </properties>
+            <build>
+              <pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>${maven.antrun.plugin.version}</version>
+                        <executions>
+                            <execution>
+                            <!-- maven-antrun-plugin must be placed before maven-scm-plugin 
+                                   in the build/plugins section so that 'mark-all-files-to-be-removed'
+                                   will be run between scm:checkout (in phase 'install')
+                                   and scm:checkin (in phase 'deploy') -->
+                                <id>mark-all-files-to-be-removed</id>
+                                <phase>deploy</phase>
+                                <configuration>
+                                    <target>
+                                        <exec executable="/bin/sh" osfamily="unix">
+                                            <arg value='-c' />
+                                            <arg value='cd ${scmWorkingDirectory} &amp;&amp; git rm -r --ignore-unmatch ${library.path}/' />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>${maven.scm.plugin.version}</version>
+                        <configuration>
+                            <checkoutDirectory>${scmWorkingDirectory}</checkoutDirectory>
+                            <workingDirectory>${scmWorkingDirectory}</workingDirectory>
+                            <scmVersion>${scm.publish.scmBranch}</scmVersion>
+                            <scmVersionType>branch</scmVersionType>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>checkout</id>
+                                <phase>install</phase>
+                                <goals><goal>checkout</goal></goals>
+                                <configuration>
+                                    <connectionUrl>scm:git:${git.https.url}</connectionUrl>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>commit-to-remove-all-files</id>
+                                <phase>deploy</phase>
+                                <goals><goal>checkin</goal></goals>
+                                <configuration>
+                                    <message>Removing published Maven artifacts for ${project.groupId}:${project.artifactId}:${project.version}</message>
+                                    <developerConnectionUrl>scm:git:${git.https.url}</developerConnectionUrl>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                    <!-- It should be possible to use github's site-maven-plugin here: give it a try?
+                     In any case, the site-maven-plugin options merge/includes/excludes wouldn't help
+                     to avoid stacking successive snapshot versions. See comment below. -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
+                        <version>${maven.scm.publish.plugin.version}</version>
+                        <configuration>
+                            <checkoutDirectory>${scmWorkingDirectory}</checkoutDirectory>
+                            <skipDeletedFiles>true</skipDeletedFiles>
+                            <content>${snapshots.staging.repo}</content>
+                            <tryUpdate>true</tryUpdate>
+                            <pubScmUrl>scm:git:${git.https.url}</pubScmUrl>
+                            <scmBranch>${scm.publish.scmBranch}</scmBranch>
+                            <checkinComment>Publishing Maven artifacts for ${project.groupId}:${project.artifactId}:${project.version} ~${maven.build.timestamp}</checkinComment>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>publish-new-snapshot</id>
+                                <phase>deploy</phase>
+                                <goals><goal>publish-scm</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+              </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>enforce</id>
+            <activation>
+                <property>
+                    <name>enforce</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-enforcer-plugin</artifactId>
+                            <version>${maven.enforcer.plugin.version}</version>
+                            <executions>
+                                <execution>
+                                    <id>enforce-versions</id>
+                                    <goals>
+                                        <goal>enforce</goal>
+                                        <!-- default phase: validate -->
+                                    </goals>
+                                    <configuration>
+                                        <fail>true</fail>
+                                        <rules>
+                                            <requireMavenVersion>
+                                                <version>${maven.minimal.version}</version>
+                                                <message>[ERROR] OLD MAVEN [${maven.version}] in use.
+                                                    Maven
+                                                    ${maven.minimal.version} or newer is required.</message>
+                                            </requireMavenVersion>
+                                            <requireJavaVersion>
+                                                <version>${jdk.version}</version>
+                                                <message>[ERROR] OLD JDK [${java.version}] in use.
+                                                    JDK ${jdk.version} or
+                                                    newer is required.</message>
+                                            </requireJavaVersion>
+                                            <requirePluginVersions>
+                                                <banLatest>true</banLatest>
+                                                <banRelease>true</banRelease>
+                                                <banSnapshots>true</banSnapshots>
+                                            </requirePluginVersions>
+                                            <bannedDependencies>
+                                                <searchTransitive>true</searchTransitive>
+                                                <excludes>
+                                                    <exclude>commons-logging</exclude>
+                                                    <exclude>log4j</exclude>
+                                                    <exclude>org.apache.logging.log4j</exclude>
+
+                                                    <exclude>org.slf4j:slf4j-log4j12</exclude>
+                                                    <exclude>org.slf4j:slf4j-jdk14</exclude>
+                                                </excludes>
+                                            </bannedDependencies>
+                                        </rules>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>versions-maven-plugin</artifactId>
+                            <version>${versions.maven.plugin.version}</version>
+                            <configuration>
+                            <!-- required to avoid warning with new beta version -->
+                                <rulesUri>file://${project.basedir}/src/conf/versionrules.xml</rulesUri>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>check-versions</id>
+                                    <phase>validate</phase>
+                                    <!-- no default phase -->
+                                    <goals>
+                                        <goal>display-dependency-updates</goal>
+                                        <goal>display-plugin-updates</goal>
+                                        <goal>display-property-updates</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <!-- use a M2Eclipse variable to detect if working under Eclipse -->
+            <id>only-under-eclipse</id>
+            <activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.eclipse.m2e</groupId>
+                            <artifactId>lifecycle-mapping</artifactId>
+                            <version>1.0.0</version>
+                            <configuration>
+                                <lifecycleMappingMetadata>
+                                    <pluginExecutions>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>build-helper-maven-plugin</artifactId>
+                                                <versionRange>${xtend.maven.plugin.version}</versionRange>
+                                                <goals>
+                                                    <goal>maven-version</goal>
+                                                    <goal>add-source</goal>
+                                                    <goal>add-test-source</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>versions-maven-plugin</artifactId>
+                                                <versionRange>${versions.maven.plugin.version}</versionRange>
+                                                <goals>
+                                                    <goal>display-dependency-updates</goal>
+                                                    <goal>display-plugin-updates</goal>
+                                                    <goal>display-property-updates</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                    </pluginExecutions>
+                                </lifecycleMappingMetadata>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
+
+
+

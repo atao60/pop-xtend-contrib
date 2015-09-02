@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.pop-xtend</groupId>
+        <artifactId>contrib-aggregator</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <artifactId>contrib-annotations</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Pop Xtend Contribution - Annotations Distribution</name>
+    <description>Gather all the Xtend active annotations</description>
+    
+    <!-- NOTE: These dependency declarations are only required to sort this project to the 
+       end of the line in the multi-module build. We need to ensure this distribution project 
+       builds AFTER any of the modules to take in account.
+       The "real" list of dependencies to be embedded is defined inside src/assembly/all-annotations.xml
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>org.pop-xtend</groupId>
+            <artifactId>contrib-webapplication</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pop-xtend</groupId>
+            <artifactId>contrib-noargsctor</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pop-xtend</groupId>
+            <artifactId>contrib-allfieldsctor</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pop-xtend</groupId>
+            <artifactId>contrib-i18n</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.5</version>
+                <executions>
+                    <execution>
+                        <id>package-all-annotations</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/all-annotations.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>maven-repo-update</id>
+            <properties>
+                <profile-active>true</profile-active>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                    </plugin> 
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
+                    </plugin>   
+                </plugins>
+            </build>
+        </profile>
+    </profiles>    
+
+</project>
