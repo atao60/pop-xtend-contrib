@@ -50,25 +50,24 @@ class Application {
 Parameters
 ---------
 
-- basename: @I18n searches all the property files with the given basename, e.g. with `basename="msg"`: msg.properties, msg_fr.properties, msg_fr_FR.properties, msg_fr_CA.properties, msg_en.properties, msg_en_EN.properties, msg_en_US.properties ...  
-If no basename is given, the simple name of the annotated class is used as basename.  
+- **basename**: @I18n searches all the property files with the given basename. E.g. with `basename="msg"`: msg.properties, msg_fr.properties, msg_fr_FR.properties, msg_fr_CA.properties, msg_en.properties, msg_en_EN.properties, msg_en_US.properties ...  
 By default, the simple name of the annotated class.
    
-- folder: @I18n searches the property files inside all the sub folders of any resource 
-folder but only under the given sub folder, e.g. for a standard Maven project 
+- **folder**: @I18n searches the property files inside all the sub folders of any resource 
+folder but only under the given sub folder. E.g. for a standard Maven project 
 with `folder="i18n"`: src/main/java/i18n, src/main/resources/i18n...  
 By default, the whole set of subfolders for each source folder is scanned. 
 
-- language: @I18n uses the first property file found for that language (see above) to retrieve the list of keys to manage.
-This paramater is used only to generate the static functions bound to those keys.  
+- **language**: @I18n uses the first property file found for that language (see above) to retrieve the list of keys to manage.
+This parameter is used only to generate the static functions bound to those keys.  
 By default, the root property files, e.g. with `basename="msg"`: `msg.properties`.  
 If no property files are found, the final fields of the annotated class are used to set up the list of keys.
 
-- escaping: two set of escaping rules are available, `classic` and `basic`.  
+- **escaping**: two set of escaping rules are available, `classic` and `basic`.  
 By default: `basic`.  
 The set of rules are:
-  * classic: the escaping rules are the same as those of [MessageRule](http://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html)
-  * basic: the escaping rules stay very close of those of [MessageRule](http://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html) but with 2 changes:
+  * **classic**: see [MessageRule](http://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html)
+  * **basic**: the escaping rules stay very close of those of [MessageRule](http://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html) but with 2 changes:
     * a standalone single quote is interpreted as a single quote whatever the kind of messages, i.e. with or without parameters,
     * left and right braces must be escaped with enclosing single quotes, i.e. "'{'" and "'}'". It's the only case where single quotes can be used as escaping characters.
         

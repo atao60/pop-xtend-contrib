@@ -3,7 +3,7 @@ Xtend - Contribution
 
 A set of tools for Xtend.
 
-At the moment it contains only [annotations](annotations/README.md)
+At the moment it contains only [annotations](annotations/README.md).
 
 ### Extension Maven and Travis-CI
 

@@ -13,7 +13,7 @@ The generated methods take an argument for each placeholder in the message.
 The type of the argument will be inferred from the message format.
 
 Furthermore, with the escaping option "basic", no more need to escape 
-single quotes. The translators will love you... 
+single quotes. The localizers will love you!  
 
 ```property file i18n/converter_en.properties
 TITLE_404 Lost?
@@ -28,7 +28,10 @@ MESSAGE_404 Revenir à la <a id='welcome' href='{0}'>page d'accueil</a>
 ```xtend
 @NoArgsConstructor(visibility=Visibility.PRIVATE)
 @I18n(folder="i18n", basename="converter", language="en", escaping="basic", provide="valueAlone")
-class I18nMessages {
+class I18nMessages {}
+
+import static extension I18nMessages.*
+class Application {
     def static void main(String[] args) {
         val locale = Locale.FRENCH
         println(locale.TITLE_404)
@@ -53,10 +56,9 @@ class Person {
 
 @NoArgsConstructor
 -----------------
-Create a class constructor without any argument. It can be public or private.
-
-That allows to define a private constructor for classes which must not be instanciated. 
-See an example above with @I18n. 
+Create a class constructor without any argument. It can be public or private. 
+That allows to define a private constructor for classes which must 
+not be instanciated. See an example above with @I18n.
 
 @WebApplication, @HttpHandler, @Get and @Post
 ---------
