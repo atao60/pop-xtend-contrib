@@ -9,19 +9,21 @@ The generated methods take an argument for each placeholder in the message.
 The type of the argument will be inferred from the message format.
 
 Furthermore, with the escaping option `basic`, no more need to escape 
-single quotes. The localizers will love you... 
+single quotes. The localizers will love you! 
 
 Usage
 -----
 
 Create property files, e.g.:
 
-```property file i18n/converter_en.properties
+```properties
+#property file i18n/converter_en.properties
 TITLE_404 Lost?
 MESSAGE_404 Come back to the <a id='welcome' href='{0}'>welcome page</a>
 ```
 
-```property file i18n/converter_fr.properties
+```properties
+#property file i18n/converter_fr.properties
 TITLE_404 Perdu ?
 MESSAGE_404 Revenir à la <a id='welcome' href='{0}'>page d'accueil</a>
 ```
