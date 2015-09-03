@@ -76,7 +76,7 @@
         <!-- Polyglot for Maven requires 3.3.1+ -->
         <maven.minimal.version>3.3.1</maven.minimal.version>
 
-        <xtendVersion>2.8.3</xtendVersion>
+        <xtendVersion>2.9.0.beta3</xtendVersion><!-- 2.8.3, 2.8.4 dispo , 2.9.0.beta3-->
 
         <xtend.maven.plugin.version>${xtendVersion}</xtend.maven.plugin.version>
         <build.helper.maven.plugin.version>1.9.1</build.helper.maven.plugin.version>
@@ -127,7 +127,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+<!--      3.10.0.v20140604-1726 provided by  org.eclipse.xtend.core 2.9.0.beta3 
+    <dependency>
+      <groupId>org.eclipse.tycho</groupId>
+      <artifactId>org.eclipse.jdt.core</artifactId>
+      <version>3.11.0.v20150602-1242</version>
+    </dependency>
+        -->  
+          
         <!-- logs -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -141,6 +148,18 @@
         </dependency>
 
         <!-- tests -->
+        <dependency>
+            <groupId>org.eclipse.xtext</groupId>
+            <artifactId>org.eclipse.xtext.junit4</artifactId>
+            <version>${xtend.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.xtext</groupId>
+            <artifactId>org.eclipse.xtext.xbase.junit</artifactId>
+            <version>${xtend.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
