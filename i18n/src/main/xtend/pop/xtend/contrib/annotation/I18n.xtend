@@ -34,22 +34,22 @@ import static java.lang.String.format
 import static pop.xtend.contrib.annotation.I18nProcessor.*
 import pop.xtend.contrib.annotation.util.FormatUtil
 import org.eclipse.xtext.xbase.lib.Functions.Function1
+import com.google.common.base.CaseFormat
 
-/**
- * For each final non static member is generated a managed message with:
- * <li> an entry in a default properties files,
- * <li> a static method.
+/** 
+ * This annotation reads a property file and for each pair of key/value 
+ * adds a static method to the annotated class. These methods can return
+ * either only the value or the pair key/value
  * 
- * The enhanced class requires Slf4j library.
+ * TODO
+ * - find why compilationUnit.filePath.projectSourceFolders returns only the sources
+ *   folders when used outside of Eclipse
+ * - add a parameter "style" for the name of the static methods, with 3 options : 
+ *   - classic: all capitals with underscore
+ *   - camel: camel style
+ *   - none: use the key as it is
  * 
- * This class doesn't manage Xtend template expression. The provided value will be treated
- * through method Expression.toString:
- * <li> no interpollation will be done,
- * <li> a multiline template will be rendered as a single line string.
  * 
- * This annotation implements the "from properties file to class" way to do things.
- * 
- *      
  */
 @Target(ElementType.TYPE)
 @Active(I18nProcessor)
@@ -58,6 +58,7 @@ annotation I18n {
 
     enum Escaping {classic, basic}
     enum Provide {valueAlone, tagAndValue}
+    enum Style {classic, camel, none}
     
     /**
      * Search all the property files with the given basename, inside the whole set of source folders
@@ -97,6 +98,12 @@ annotation I18n {
      * Specify if the static functions must provide either the property value alone or a pair tag + value.
      */
     Provide provide = Provide.tagAndValue
+    
+    /**
+     * Specify if the name of all the generated static methods should have the same style, either classic 
+     * or camel, or if the key is taken as it is.
+     */
+     Style style = Style.none
 }
 
 class I18nProcessor extends AbstractClassProcessor {
@@ -104,6 +111,7 @@ class I18nProcessor extends AbstractClassProcessor {
     public static val DEFAULT_LANGUAGE = Locale.ENGLISH
     public static val DEFAULT_ESCAPING_RULE = I18n.Escaping.basic
     public static val DEFAULT_PROVIDER_RULE = I18n.Provide.tagAndValue
+    public static val DEFAULT_METHOD_NAME_STYLE = I18n.Style.none
     
     override doTransform(MutableClassDeclaration it, TransformationContext context) {
         extension val util = new Util(context)
@@ -124,6 +132,7 @@ class I18nProcessor extends AbstractClassProcessor {
         static val I18N_LANGUAGE = "language"
         static val I18N_ESCAPING_RULES = "escaping"
         static val I18N_PROVIDE = "provide"
+        static val I18N_STYLE = "style"
     
         static val STRING_DELIMITER = "\""
         static val TEMPLATE_DELIMITER = "'''"
@@ -135,6 +144,7 @@ class I18nProcessor extends AbstractClassProcessor {
         var Locale localeCache = null
         var I18n.Escaping formattingRuleCache = null
         var I18n.Provide providerFormatCache = null
+        var I18n.Style methodNameStyleCache = null
                 
         new(TransformationContext context) {
             this.context = context
@@ -233,7 +243,7 @@ class I18nProcessor extends AbstractClassProcessor {
             val withBasicRules = ia.propertyFileEscapingRule === I18n.Escaping.basic
             
             val key = property.key
-            val methodName = key.keyToMethodName
+            val methodName = ia.keyToMethodName(key)
             val msg_ = property.value
             val msg = if (!withBasicRules) msg_ else msg_.getMessageReadyForMessageFormat
             
@@ -335,6 +345,10 @@ class I18nProcessor extends AbstractClassProcessor {
         
         def private findPropertyFiles(ClassDeclaration it, String folder, String basename) {
             val sourcefolders = compilationUnit.filePath.projectSourceFolders
+// test:start            
+println(">>>>> source folders: ")
+sourcefolders.forEach[println("- " + it)]
+// test:end            
             val cls = it
             sourcefolders.map[it -> append(folder).findPropertyFilesWithBasename(basename, cls)].filter[!value.empty]  
         }
@@ -417,6 +431,19 @@ class I18nProcessor extends AbstractClassProcessor {
             providerFormatCache
         }
         
+        def private getMethodNameStyle(AnnotationReference it) {
+            if (methodNameStyleCache === null) {
+                methodNameStyleCache = try {
+                        I18n.Style.valueOf(getEnumValue(I18N_STYLE).simpleName)
+                    }catch(IllegalArgumentException e) {
+                        DEFAULT_METHOD_NAME_STYLE
+                    } catch(NullPointerException e) {
+                        DEFAULT_METHOD_NAME_STYLE
+                    }
+            }
+            methodNameStyleCache
+        }
+        
         def private getPropertiesFromFile(Path propertyFile) {
             val reader = new StringReader(propertyFile.contents.toString)
             val bundle = new PropertyResourceBundle(reader)
@@ -446,9 +473,19 @@ class I18nProcessor extends AbstractClassProcessor {
             value
         }
         
-        def static private keyToMethodName(String key) {
-//            CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, key).toFirstLower
-            key
+        def private keyToMethodName(AnnotationReference it, String key) {
+            switch methodNameStyle {
+                case I18n.Style.classic:  {
+                    CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, key)
+                }
+                case I18n.Style.camel: {
+//                    CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, key).toFirstLower
+                    CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, key)
+                }
+                default: {
+                    key
+                }
+            }
         }
         
         def static private getBaseNameIfEmptyFromClass(ClassDeclaration it, String basename) {
