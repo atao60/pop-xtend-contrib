@@ -11,7 +11,7 @@
     </parent>
     <artifactId>contrib-allfieldsctor</artifactId>
     
-    <name>Xtend Constructor with all fields but transient</name>
+    <name>Xtend Annotation Constructor with all fields but transient</name>
     <description>Generate a constructor with arguments for all non transient fields</description>
         
 </project>

@@ -11,7 +11,7 @@
     </parent>
     <artifactId>contrib-webapplication</artifactId>
     
-    <name>Web Application with Spring</name>
+    <name>Xtend Annotations for Web Application using Spring</name>
     <description><![CDATA[A full web application with a minimum of code. 
     Inspered by <a href="http://www.sinatrarb.com/">Sinatra</a> framework.]]></description>
     

@@ -11,7 +11,7 @@
     </parent>
     <artifactId>contrib-i18n</artifactId>
     
-    <name>Better I18n in Java</name>
+    <name>Xtend Annotation for better I18n</name>
     <description><![CDATA[Easy i18n. 
     Inspered by <a href="http://blog.efftinge.de/2013/09/better-i18n-in-java.html">Better I18n in Java</a> framework.]]></description>
     

@@ -11,7 +11,7 @@
     </parent>
     <artifactId>contrib-noargsctor</artifactId>
     
-    <name>Xtend No Arguments Constructor</name>
+    <name>Xtend Annotation Constructor with No Arguments</name>
     <description>Generate a constructor without any argument</description>
     
 </project>
