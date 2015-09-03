@@ -4,7 +4,7 @@ import org.eclipse.xtend.core.compiler.batch.XtendCompilerTester
 import org.junit.Test
 
 class HttpHandlerTest {
-    extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(HttpHandler, Get, Post)
+    extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(class.classLoader)
     
     @Test def simpleCaseChecking() {
         '''

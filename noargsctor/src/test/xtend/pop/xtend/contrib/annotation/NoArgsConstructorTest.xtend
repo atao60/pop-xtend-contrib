@@ -4,7 +4,7 @@ import org.eclipse.xtend.core.compiler.batch.XtendCompilerTester
 import org.junit.Test
 
 class NoArgsConstructorTest {
-    extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(NoArgsConstructor)
+    extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(class.classLoader)
 
     @Test def fullCodeChecking() {
         '''

@@ -4,7 +4,7 @@ import org.eclipse.xtend.core.compiler.batch.XtendCompilerTester
 import org.junit.Test
 
 class WebApplicationTest {
-    extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(WebApplication, HttpHandler, Get, Post)
+    extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(class.classLoader)
 
     @Test def noMappingTest() {
         '''

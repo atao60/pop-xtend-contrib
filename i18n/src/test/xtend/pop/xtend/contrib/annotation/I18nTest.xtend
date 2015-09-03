@@ -10,7 +10,7 @@ import org.eclipse.xtend.lib.macro.declaration.Visibility
 
 class I18nTest {
     
-    extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(I18n)
+    extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(class.classLoader)
         
     @Test def void testStringDefaultValue() {
         '''
