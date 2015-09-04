@@ -1,5 +1,6 @@
 package pop.xtend.contrib.annotation
 
+import com.google.common.base.CaseFormat
 import java.io.StringReader
 import java.lang.annotation.Documented
 import java.lang.annotation.ElementType
@@ -11,6 +12,7 @@ import java.text.NumberFormat
 import java.util.AbstractMap
 import java.util.Date
 import java.util.IllformedLocaleException
+import java.util.List
 import java.util.Locale
 import java.util.Map
 import java.util.MissingResourceException
@@ -27,14 +29,14 @@ import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration
 import org.eclipse.xtend.lib.macro.declaration.Visibility
 import org.eclipse.xtend.lib.macro.expression.Expression
 import org.eclipse.xtend.lib.macro.file.Path
+import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import pop.xtend.contrib.annotation.util.FormatUtil
 
 import static java.lang.String.format
 import static pop.xtend.contrib.annotation.I18nProcessor.*
-import pop.xtend.contrib.annotation.util.FormatUtil
-import org.eclipse.xtext.xbase.lib.Functions.Function1
-import com.google.common.base.CaseFormat
+import java.util.HashSet
 
 /** 
  * This annotation reads a property file and for each pair of key/value 
@@ -55,7 +57,7 @@ import com.google.common.base.CaseFormat
 @Active(I18nProcessor)
 @Documented
 annotation I18n {
-
+    
     enum Escaping {classic, basic}
     enum Provide {valueAlone, tagAndValue}
     enum Style {classic, camel, none}
@@ -103,15 +105,23 @@ annotation I18n {
      * Specify if the name of all the generated static methods should have the same style, either classic 
      * or camel, or if the key is taken as it is.
      */
-     Style style = Style.none
+    Style style = Style.none
+     
+    /*
+     * A workaround about:
+     *     Bug 476609 - projectSourceFolders doesn't catch the resources folders when used with Maven outside Eclipse
+     *     https://bugs.eclipse.org/bugs/show_bug.cgi?id=476609
+     */
+    String[] sources = #[];
 }
 
 class I18nProcessor extends AbstractClassProcessor {
     
-    public static val DEFAULT_LANGUAGE = Locale.ENGLISH
+    public static val DEFAULT_LANGUAGE = Locale.ROOT
     public static val DEFAULT_ESCAPING_RULE = I18n.Escaping.basic
     public static val DEFAULT_PROVIDER_RULE = I18n.Provide.tagAndValue
     public static val DEFAULT_METHOD_NAME_STYLE = I18n.Style.none
+    public static val String[] DEFAULT_EXTRA_SOURCES = #[]
     
     override doTransform(MutableClassDeclaration it, TransformationContext context) {
         extension val util = new Util(context)
@@ -133,6 +143,7 @@ class I18nProcessor extends AbstractClassProcessor {
         static val I18N_ESCAPING_RULES = "escaping"
         static val I18N_PROVIDE = "provide"
         static val I18N_STYLE = "style"
+        static val I18N_EXTRA_SOURCES= "sources"
     
         static val STRING_DELIMITER = "\""
         static val TEMPLATE_DELIMITER = "'''"
@@ -145,6 +156,7 @@ class I18nProcessor extends AbstractClassProcessor {
         var I18n.Escaping formattingRuleCache = null
         var I18n.Provide providerFormatCache = null
         var I18n.Style methodNameStyleCache = null
+        var List<Path> sourceListCache = null
                 
         new(TransformationContext context) {
             this.context = context
@@ -324,8 +336,8 @@ class I18nProcessor extends AbstractClassProcessor {
         def private getPropertyFile(ClassDeclaration it, String folder, String name, Locale language) {
             
             val basename = getBaseNameIfEmptyFromClass(name)
-            val localbasename = basename.getLocalizedBasename(language)
-            val ef = findPropertyFiles(folder, localbasename)
+            val localizedbasename = basename.getLocalizedBasename(language)
+            val ef = findPropertyFiles(folder, localizedbasename)
             if (ef.empty) null 
             else {
                 val file = ef.get(0).value.get(0)
@@ -333,7 +345,7 @@ class I18nProcessor extends AbstractClassProcessor {
                 if (files.length > 1) {
                     addWarning('''
                         File used to fill the annotated class «it.simpleName»: «file.toString».
-                        The full list is: «files». 
+                        The full list of candidates is: «files». 
                         ''')
                 }
                 val source = ef.get(0).key
@@ -344,12 +356,23 @@ class I18nProcessor extends AbstractClassProcessor {
         }
         
         def private findPropertyFiles(ClassDeclaration it, String folder, String basename) {
-            val sourcefolders = compilationUnit.filePath.projectSourceFolders
-// test:start            
-println(">>>>> source folders: ")
-sourcefolders.forEach[println("- " + it)]
-// test:end            
             val cls = it
+            var sourcefolders = new HashSet(compilationUnit.filePath.projectSourceFolders) => [
+            // FIXME: workaround for the bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=476609.
+            //        To be removed as soon as the bug is fixed.
+                val ia = cls.getAnnotation(I18n, context)
+                addAll(ia.getAdditionalSourceFolders(cls.compilationUnit.filePath.projectFolder))
+// test:start            
+println(">>>>> "+cls.compilationUnit.filePath+" is in source folders: ")
+forEach[println("- " + it)]
+// test:end          
+            ]
+            addWarning('''
+            The full list of source folders: 
+            «FOR f:sourcefolders»
+            ---> «f»
+            «ENDFOR»
+            ''')  
             sourcefolders.map[it -> append(folder).findPropertyFilesWithBasename(basename, cls)].filter[!value.empty]  
         }
         
@@ -392,13 +415,13 @@ sourcefolders.forEach[println("- " + it)]
             if (localeCache === null) {
                 val l = (getAnnotationPropertyValue(I18N_LANGUAGE)?:"").trim
                 localeCache = if (l.empty) {
-                        Locale.ROOT
+                        DEFAULT_LANGUAGE
                     } 
                     else try {
                         new Locale.Builder().setLanguageTag(l).build
                     } catch(IllformedLocaleException e) {
-                        addError('''The provided language code '«l»' is ill formed: '«DEFAULT_LANGUAGE»' will be used.
-                        There is no guaranties that a set of messages is available for this code.''')
+                        addError('''The provided language code '«l»' is ill formed: 
+                        default language will be used (see root basename property file or annotated class).''')
                         DEFAULT_LANGUAGE
                     }
             }
@@ -442,6 +465,20 @@ sourcefolders.forEach[println("- " + it)]
                     }
             }
             methodNameStyleCache
+        }
+        
+        def private getAdditionalSourceFolders(AnnotationReference it, Path project) {
+            if (sourceListCache === null) {
+                val extrasources = try {
+                    getStringArrayValue(I18N_EXTRA_SOURCES)
+                    } catch(IllegalArgumentException e) {
+                        DEFAULT_EXTRA_SOURCES
+                    } catch(NullPointerException e) {
+                        DEFAULT_EXTRA_SOURCES
+                    }
+                sourceListCache = extrasources.map[project.append(it)]
+            }
+            sourceListCache
         }
         
         def private getPropertiesFromFile(Path propertyFile) {
