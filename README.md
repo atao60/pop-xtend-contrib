@@ -1,4 +1,4 @@
-Xtend - Contribution
+Xtend - Contribution j2x-on-openshift [![Build Status](https://travis-ci.org/atao60/pop-xtend-contrib.svg?branch=master)](https://travis-ci.org/atao60/pop-xtend-contrib)
 ====================
 
 A set of tools for Xtend.
