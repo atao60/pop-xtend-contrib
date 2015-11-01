@@ -6,10 +6,10 @@
     <parent>
         <groupId>org.pop-xtend</groupId>
         <artifactId>contrib-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
-    <artifactId>contrib-annotations</artifactId>
+    <artifactId>contrib-all-annotations</artifactId>
     <packaging>pom</packaging>
 
     <name>Pop Xtend Contribution - Annotations Distribution</name>
@@ -24,22 +24,22 @@
         <dependency>
             <groupId>org.pop-xtend</groupId>
             <artifactId>contrib-webapplication</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.pop-xtend</groupId>
             <artifactId>contrib-noargsctor</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.pop-xtend</groupId>
             <artifactId>contrib-allfieldsctor</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.pop-xtend</groupId>
             <artifactId>contrib-i18n</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 
