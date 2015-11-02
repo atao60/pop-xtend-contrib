@@ -6,6 +6,46 @@ import org.junit.Test
 class WebApplicationTest {
     extension XtendCompilerTester compilerTester = XtendCompilerTester.newXtendCompilerTester(class.classLoader)
 
+    @Test def withExistingMainMethodTest() {
+        '''
+        package popsuite.books.tries.spring.boot
+
+        import pop.xtend.contrib.annotation.WebApplication
+
+        @WebApplication
+        class HelloApplication {
+        
+            def static void main(String[] args) {
+                println("Hello!");
+            }
+        
+        }
+        '''.assertCompilesTo(
+            '''
+package popsuite.books.tries.spring.boot;
+
+import org.eclipse.xtext.xbase.lib.InputOutput;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import pop.xtend.contrib.annotation.WebApplication;
+
+@WebApplication
+@SpringBootApplication
+@SuppressWarnings("all")
+public class HelloApplication {
+  public static void main(final String[] args) {
+    org.springframework.boot.SpringApplication.run(HelloApplication.class, args);
+    
+    wrappedMain(args);
+  }
+  
+  private static void wrappedMain(final String[] args) {
+    InputOutput.<String>println("Hello!");
+  }
+}
+        ''')
+
+    }
+
     @Test def noMappingTest() {
         '''
         package popsuite.books.tries.spring.boot
