@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.pop-xtend</groupId>
         <artifactId>contrib-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
         <relativePath>parent</relativePath>
     </parent>
     <artifactId>contrib-aggregator</artifactId>
@@ -21,7 +21,7 @@
         <module>noargsctor</module>
         <module>allfieldsctor</module>
         <module>i18n</module>
-        <module>annotations</module>
+        <module>all-annotations</module>
     </modules>
    
     

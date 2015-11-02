@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.pop-xtend</groupId>
         <artifactId>contrib-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
         <relativePath>../parent</relativePath>
     </parent>
     <artifactId>contrib-webapplication</artifactId>
@@ -20,7 +20,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
-                <!-- This annoation is agnostic on server to be used -->
+                <!-- This annotation is agnostic on server to be used -->
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-tomcat</artifactId>
